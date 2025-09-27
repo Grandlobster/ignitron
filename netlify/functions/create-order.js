@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
 
     // Create Razorpay order
     const order = await razorpay.orders.create({
-      amount: 10 * 100, // ₹10 in paise
+      amount: 1 * 100, // ₹10 in paise
       currency: "INR",
       receipt: `rcpt_${Date.now()}`,
     });
