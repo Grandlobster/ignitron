@@ -299,59 +299,60 @@
 
     <div class="form-container">
         <h2 class="form-title">System Protocol: Register</h2>
-        <form name="ignitron-registration" method="POST" data-netlify="true">
-            <input type="hidden" name="form-name" value="ignitron-registration">
-            <p hidden>
-                <label>
-                    Don't fill this out: <input name="bot-field">
-                </label>
-            </p>
+        <form name="ignitron-registration" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+  <!-- 👇 Hidden input so Netlify registers the form -->
+  <input type="hidden" name="form-name" value="ignitron-registration">
 
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="Name" required>
-            </div>
+  <!-- 👇 Honeypot field for spam protection -->
+  <p hidden>
+    <label>Don’t fill this out: <input name="bot-field"></label>
+  </p>
 
-            <div class="form-group">
-                <label for="college">College</label>
-                <input type="text" id="college" name="College" required>
-            </div>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="Name" required>
+  </div>
 
-            <div class="form-group">
-                <label for="year">Year</label>
-                <input type="number" id="year" name="Year" required min="1" max="4">
-            </div>
+  <div class="form-group">
+    <label for="college">College</label>
+    <input type="text" id="college" name="College" required>
+  </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="Email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="event">Event of Interest</label>
-                <select id="event" name="Event" required>
-                    <option value="" disabled selected>Select an Event</option>
-                    <option value="esports">ESPORTS</option>
-                    <option value="hackathon">HACKATHON</option>
-                    <option value="games">GAMES</option>
-                </select>
-            </div>
+  <div class="form-group">
+    <label for="year">Year</label>
+    <input type="number" id="year" name="Year" required min="1" max="4">
+  </div>
 
-            <div class="form-group">
-                <label for="pronouns">Pronouns</label>
-                <select id="pronouns" name="Pronouns" required>
-                    <option value="" disabled selected>Select your Pronouns</option>
-                    <option value="he/him">He/Him</option>
-                    <option value="she/her">She/Her</option>
-                    <option value="they/them">They/Them</option>
-                    <option value="ze/zir">Ze/Zir</option>
-                    <option value="custom">Other/Custom</option>
-                    <option value="prefer-not-to-say">Prefer not to say</option>
-                </select>
-            </div>
-            
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="Email" required>
+  </div>
+
+  <div class="form-group">
+    <label for="event">Event of Interest</label>
+    <select id="event" name="Event" required>
+      <option value="" disabled selected>Select an Event</option>
+      <option value="esports">ESPORTS</option>
+      <option value="hackathon">HACKATHON</option>
+      <option value="games">GAMES</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="pronouns">Pronouns</label>
+    <select id="pronouns" name="Pronouns" required>
+      <option value="" disabled selected>Select your Pronouns</option>
+      <option value="he/him">He/Him</option>
+      <option value="she/her">She/Her</option>
+      <option value="they/them">They/Them</option>
+      <option value="ze/zir">Ze/Zir</option>
+      <option value="custom">Other/Custom</option>
+      <option value="prefer-not-to-say">Prefer not to say</option>
+    </select>
+  </div>
+
+  <button type="submit" class="submit-btn">Submit</button>
+    </form>
     </div>
 
     <div class="success-container" id="successContainer">
