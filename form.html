@@ -1,428 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IGNITRON 2K25 - Registration</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-color: #00f2fe;
-            --dark-bg: #0a0a0f;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-primary: #ffffff;
-            --text-secondary: #b8bcc8;
-        }
-
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.7;
-            overflow-x: hidden; /* Prevent horizontal scrolling on overflow */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* --- Background Matrix --- */
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        /* --- Form Container --- */
-        .form-container {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--accent-color);
-            border-radius: 10px;
-            padding: 3rem 4rem;
-            width: 90%;
-            max-width: 650px;
-            box-shadow: 0 0 40px rgba(0, 242, 254, 0.2);
-            backdrop-filter: blur(10px);
-            animation: form-entry 1s ease-out forwards;
-        }
-
-        .form-title {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2rem, 5vw, 3rem);
-            text-align: center;
-            margin-bottom: 2rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-            font-family: 'Space Grotesk', sans-serif;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--text-secondary);
-            border-radius: 5px;
-            color: var(--text-primary);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 5px var(--accent-color);
-        }
-
-        .form-group select option {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-        }
-        
-        .form-group select option:checked {
-            background-color: #0d1217;
-        }
-        
-        .form-group select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
-            background-repeat: no-repeat;
-            background-position-x: calc(100% - 10px);
-            background-position-y: 50%;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            background: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            font-family: 'Orbitron', monospace;
-            font-weight: 700;
-            font-size: 1.2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--primary-gradient);
-            transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1);
-            transform: skewX(-30deg);
-            z-index: -1;
-        }
-
-        .submit-btn:hover::before {
-            transform: translateX(100%) skewX(-30deg);
-        }
-
-        .submit-btn:hover {
-            color: var(--dark-bg);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
-        }
-
-        /* --- Submission Success Animation --- */
-        .success-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(15px);
-            z-index: 5000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
-        }
-
-        .success-container.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .success-message {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(2rem, 5vw, 4rem);
-            color: var(--accent-color);
-            margin-bottom: 2rem;
-            text-align: center;
-            animation: text-pulse 2s infinite ease-in-out;
-        }
-        
-        .loading-animation {
-            position: relative;
-            width: 100px;
-            height: 100px;
-        }
-
-        .loading-animation .line {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(0deg);
-            width: 100%;
-            height: 2px;
-            background: var(--accent-color);
-            animation: line-rotate 2s infinite linear;
-            opacity: 0.8;
-        }
-        
-        .loading-animation .line:nth-child(2) {
-            animation-delay: 0.5s;
-        }
-
-        .loading-animation .line::before,
-        .loading-animation .line::after {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: 0;
-            width: 10px;
-            height: 10px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            animation: point-flow 2s infinite linear;
-        }
-
-        .loading-animation .line::after {
-            left: auto;
-            right: 0;
-            animation-delay: 1s;
-        }
-        
-        .success-back-btn {
-            padding: 1rem 2.5rem;
-            background: transparent;
-            border: 2px solid var(--accent-color);
-            border-radius: 5px;
-            color: var(--accent-color);
-            font-family: 'Orbitron', monospace;
-            text-transform: uppercase;
-            text-decoration: none;
-            margin-top: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .success-back-btn:hover {
-            color: var(--dark-bg);
-            background: var(--accent-color);
-            box-shadow: 0 0 15px var(--accent-color);
-        }
-
-        /* --- Keyframe Animations --- */
-        @keyframes text-pulse {
-            0%, 100% { filter: drop-shadow(0 0 5px var(--accent-color)); }
-            50% { filter: drop-shadow(0 0 15px var(--accent-color)); }
-        }
-
-        @keyframes line-rotate {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes point-flow {
-            from { transform: translateX(0); }
-            to { transform: translateX(90px); }
-        }
-
-        @keyframes form-entry {
-            from { transform: scale(0.9) translateY(20px); opacity: 0; }
-            to { transform: scale(1) translateY(0); opacity: 1; }
-        }
-
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 2rem;
-            }
-
-            .form-title {
-                font-size: clamp(1.5rem, 6vw, 2rem);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGNITRON 2K25 - Registration</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Space Grotesk',sans-serif;background:#0a0a0f;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+  .form-container{background:rgba(255,255,255,0.05);padding:2rem 3rem;border-radius:10px;width:90%;max-width:600px;}
+  .form-title{font-family:'Orbitron',monospace;font-size:2rem;text-align:center;margin-bottom:1.5rem;color:#00f2fe;}
+  .form-group{margin-bottom:1rem;}
+  .form-group label{display:block;margin-bottom:0.3rem;color:#00f2fe;font-weight:700;text-transform:uppercase;}
+  .form-group input,.form-group select{width:100%;padding:0.5rem;border-radius:5px;border:1px solid #b8bcc8;background:rgba(255,255,255,0.1);color:#fff;}
+  .submit-btn{width:100%;padding:1rem;border:2px solid #00f2fe;color:#00f2fe;font-family:'Orbitron',monospace;font-weight:700;font-size:1.2rem;border-radius:5px;cursor:pointer;background:transparent;}
+  .submit-btn:hover{background:#00f2fe;color:#0a0a0f;}
+</style>
 </head>
 <body>
 
-    <canvas id="matrix-canvas"></canvas>
-
-    <div class="form-container">
-        <h2 class="form-title">System Protocol: Register</h2>
-        <form name="ignitron-registration" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-  <!-- 👇 Hidden input so Netlify registers the form -->
-  <input type="hidden" name="form-name" value="ignitron-registration">
-
-  <!-- 👇 Honeypot field for spam protection -->
-  <p hidden>
-    <label>Don’t fill this out: <input name="bot-field"></label>
-  </p>
-
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" id="name" name="Name" required>
-  </div>
-
-  <div class="form-group">
-    <label for="college">College</label>
-    <input type="text" id="college" name="College" required>
-  </div>
-
-  <div class="form-group">
-    <label for="year">Year</label>
-    <input type="number" id="year" name="Year" required min="1" max="4">
-  </div>
-
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input type="email" id="email" name="Email" required>
-  </div>
-
-  <div class="form-group">
-    <label for="event">Event of Interest</label>
-    <select id="event" name="Event" required>
-      <option value="" disabled selected>Select an Event</option>
-      <option value="esports">ESPORTS</option>
-      <option value="hackathon">HACKATHON</option>
-      <option value="games">GAMES</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="pronouns">Pronouns</label>
-    <select id="pronouns" name="Pronouns" required>
-      <option value="" disabled selected>Select your Pronouns</option>
-      <option value="he/him">He/Him</option>
-      <option value="she/her">She/Her</option>
-      <option value="they/them">They/Them</option>
-      <option value="ze/zir">Ze/Zir</option>
-      <option value="custom">Other/Custom</option>
-      <option value="prefer-not-to-say">Prefer not to say</option>
-    </select>
-  </div>
-
-  <button type="submit" class="submit-btn">Submit</button>
-    </form>
+<div class="form-container">
+  <h2 class="form-title">System Protocol: Register</h2>
+  <form id="registrationForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
     </div>
-
-    <div class="success-container" id="successContainer">
-        <div class="loading-animation">
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <h2 class="success-message">DATA SUBMISSION SUCCESSFUL.</h2>
-        <a href="index.html" class="success-back-btn">RETURN TO MAIN PROTOCOL</a>
+    <div class="form-group">
+      <label for="college">College</label>
+      <input type="text" id="college" name="college" required>
     </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input type="tel" id="phone" name="phone" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="year">Year</label>
+      <input type="number" id="year" name="year" min="1" max="4" required>
+    </div>
+    <div class="form-group">
+      <label for="event">Event of Interest</label>
+      <select id="event" name="eventType" required>
+        <option value="" disabled selected>Select an Event</option>
+        <option value="Hackathon">Hackathon</option>
+        <option value="ESPORTS">ESPORTS</option>
+        <option value="Workshops">Workshops</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="pronouns">Pronouns</label>
+      <select id="pronouns" name="pronouns" required>
+        <option value="" disabled selected>Select your Pronouns</option>
+        <option value="he/him">He/Him</option>
+        <option value="she/her">She/Her</option>
+        <option value="they/them">They/Them</option>
+        <option value="ze/zir">Ze/Zir</option>
+        <option value="other">Other/Custom</option>
+        <option value="prefer-not-to-say">Prefer not to say</option>
+      </select>
+    </div>
+    <button type="submit" class="submit-btn">Submit & Pay ₹10</button>
+  </form>
+</div>
 
-    <script>
-        // Matrix Rain Effect
-        class MatrixRain {
-            constructor() {
-                this.canvas = document.getElementById('matrix-canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()";
-                this.fontSize = 14;
-                this.columns = 0;
-                this.drops = [];
-                this.init();
-            }
-            init() {
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-                this.animate();
-            }
-            resize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-                this.columns = Math.floor(this.canvas.width / this.fontSize);
-                this.drops = Array(this.columns).fill(1);
-            }
-            animate() {
-                this.ctx.fillStyle = 'rgba(0, 5, 16, 0.04)';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                this.ctx.fillStyle = '#00ffff';
-                this.ctx.font = this.fontSize + 'px monospace';
-                for (let i = 0; i < this.drops.length; i++) {
-                    const text = this.characters[Math.floor(Math.random() * this.characters.length)];
-                    this.ctx.fillText(text, i * this.fontSize, this.drops[i] * this.fontSize);
-                    if (this.drops[i] * this.fontSize > this.canvas.height && Math.random() > 0.975) {
-                        this.drops[i] = 0;
-                    }
-                    this.drops[i]++;
-                }
-                setTimeout(() => requestAnimationFrame(() => this.animate()), 50);
-            }
-        }
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-        // Form submission handler
-        document.addEventListener('DOMContentLoaded', () => {
-            new MatrixRain();
+  const formData = {
+    name: document.getElementById('name').value,
+    college: document.getElementById('college').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    year: document.getElementById('year').value,
+    eventType: document.getElementById('event').value,
+    pronouns: document.getElementById('pronouns').value
+  };
 
-            const form = document.querySelector('form');
-            const successContainer = document.getElementById('successContainer');
-            
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
-                const formData = new FormData(form);
-                fetch(form.action, {
-                    method: form.method,
-                    body: new URLSearchParams(formData).toString(),
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                }).then(() => {
-                    successContainer.classList.add('visible');
-                }).catch(error => alert('Submission failed. Please try again.'));
-            });
-        });
-    </script>
+  try {
+    // 1️⃣ Create order in backend
+    const orderRes = await fetch('/.netlify/functions/create-order', {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    });
+    const orderData = await orderRes.json();
+
+    // 2️⃣ Fetch Razorpay key_id from secure function
+    const keyRes = await fetch('/.netlify/functions/get-key');
+    const { key_id } = await keyRes.json();
+
+    // 3️⃣ Open Razorpay checkout
+    const options = {
+      key: key_id,
+      amount: orderData.amount,
+      currency: orderData.currency,
+      order_id: orderData.order_id,
+      handler: function(response) {
+        alert('Payment Successful! Payment ID: ' + response.razorpay_payment_id);
+      },
+      prefill: {
+        name: formData.name,
+        email: formData.email,
+        contact: formData.phone
+      },
+      theme: { color: "#00f2fe" }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (err) {
+    console.error(err);
+    alert('Error creating order. Please try again.');
+  }
+});
+</script>
+
 </body>
 </html>
