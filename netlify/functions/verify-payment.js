@@ -2,12 +2,6 @@ const Razorpay = require("razorpay");
 const { Client } = require("pg");
 const crypto = require("crypto");
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
 // PostgreSQL client
 const client = new Client({
   connectionString: process.env.NETLIFY_DATABASE_URL,
@@ -17,9 +11,21 @@ const client = new Client({
 exports.handler = async (event, context) => {
   try {
     const body = JSON.parse(event.body);
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
+    const {
+      name,
+      college,
+      year,
+      email,
+      phone,
+      event,
+      gender,
+      pronouns,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = body;
 
-    // Verify payment signature
+    // 1️⃣ Verify Razorpay signature
     const generated_signature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
@@ -32,21 +38,35 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Connect to DB
+    // 2️⃣ Connect to database
     await client.connect();
 
-    // Update registration (optional: mark as paid)
-    const updateQuery = `
-      UPDATE registrations
-      SET razorpay_payment_id = $1
-      WHERE razorpay_order_id = $2
+    // 3️⃣ Insert registration record
+    const insertQuery = `
+      INSERT INTO registrations 
+        (name, college, year, email, phone, event_type, gender, pronouns, razorpay_order_id, razorpay_payment_id)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      RETURNING id
     `;
-    await client.query(updateQuery, [razorpay_payment_id, razorpay_order_id]);
+    const values = [
+      name,
+      college,
+      year,
+      email,
+      phone,
+      event,
+      gender,
+      pronouns,
+      razorpay_order_id,
+      razorpay_payment_id,
+    ];
+
+    const result = await client.query(insertQuery, values);
     await client.end();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true }),
+      body: JSON.stringify({ success: true, registrationId: result.rows[0].id }),
     };
   } catch (error) {
     console.error("Error in verify-payment:", error);
