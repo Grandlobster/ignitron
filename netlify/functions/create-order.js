@@ -1,60 +1,61 @@
 const Razorpay = require("razorpay");
-const { Client } = require("pg");
+const { Pool } = require("pg");
 
-// Initialize Razorpay with env variables
+// Initialize Razorpay
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// PostgreSQL client
-const client = new Client({
+// PostgreSQL pool
+const pool = new Pool({
   connectionString: process.env.NETLIFY_DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
 
 exports.handler = async (event, context) => {
+  let client;
   try {
     const body = JSON.parse(event.body);
-    const { name, college, year, email, phone, event: event_type, pronouns, gender } = body;
+    const { name, college, year, email, phone, event_type, gender, pronouns, amount } = body;
 
-    // Create Razorpay order
-    const order = await razorpay.orders.create({
-      amount: 1 * 100, // ₹10 in paise
+    // 1️⃣ Create Razorpay order
+    const options = {
+      amount: amount * 100, // amount in paise
       currency: "INR",
-      receipt: `rcpt_${Date.now()}`,
-    });
+      receipt: `receipt_${Date.now()}`,
+      payment_capture: 1,
+    };
+    const order = await razorpay.orders.create(options);
 
-    // Connect to DB
-    await client.connect();
-
-    // Insert user data with Razorpay order ID
-    const query = `
-      INSERT INTO registrations
-      (name, college, year, email, phone, event_type, pronouns, razorpay_order_id)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+    // 2️⃣ Insert a registration placeholder (optional, can insert after payment)
+    client = await pool.connect();
+    const insertQuery = `
+      INSERT INTO registrations (name, college, year, email, phone, event_type, gender, pronouns, razorpay_order_id)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
       RETURNING id
     `;
-    const values = [name, college, year || null, email, phone || null, event_type || null, pronouns || null, order.id];
+    const values = [name, college, year, email, phone, event_type, gender, pronouns, order.id];
+    const result = await client.query(insertQuery, values);
+    client.release();
 
-    const res = await client.query(query, values);
-    await client.end();
-
-    // Return order info to frontend
     return {
       statusCode: 200,
       body: JSON.stringify({
+        success: true,
         key: process.env.RAZORPAY_KEY_ID,
         orderId: order.id,
-        amount: order.amount,
+        amount: order.amount / 100,
         currency: order.currency,
+        registrationId: result.rows[0].id,
       }),
     };
   } catch (error) {
+    if (client) client.release();
     console.error("Error in create-order:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Order creation failed" }),
+      body: JSON.stringify({ success: false, error: "Order creation failed" }),
     };
   }
 };
