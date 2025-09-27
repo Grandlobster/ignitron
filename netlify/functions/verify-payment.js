@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
       year,
       email,
       phone,
-      event: event_type,
+      event_type,
       gender,
       pronouns,
       razorpay_order_id,
