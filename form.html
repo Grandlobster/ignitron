@@ -123,7 +123,7 @@
         <option value="other">Other</option>
       </select>
     </div>
-    <button type="submit" class="submit-btn">Pay ₹10 & Register</button>
+    <button type="submit" class="submit-btn">Pay ₹1 & Register</button>
   </form>
 </div>
 
@@ -151,7 +151,7 @@ form.addEventListener('submit', async (e) => {
     const res = await fetch('/.netlify/functions/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formData, amount: 10 }) // ₹10
+      body: JSON.stringify({ ...formData, amount: 1 }) // ₹1 Garebiii
     });
     const data = await res.json();
     if (!data.orderId) throw new Error('Order creation failed');
