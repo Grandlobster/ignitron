@@ -1,88 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IGNITRON 2K25 - Registration</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      --accent-color: #00f2fe;
-      --dark-bg: #0a0a0f;
-      --text-primary: #ffffff;
-      --text-secondary: #b8bcc8;
-    }
-
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background-color: var(--dark-bg);
-      color: var(--text-primary);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .form-container {
-      background: rgba(255,255,255,0.05);
-      border: 2px solid var(--accent-color);
-      border-radius: 10px;
-      padding: 3rem 4rem;
-      width: 90%;
-      max-width: 650px;
-      backdrop-filter: blur(10px);
-    }
-
-    .form-title {
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(2rem,5vw,3rem);
-      text-align: center;
-      margin-bottom: 2rem;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; color: var(--accent-color); text-transform: uppercase; font-weight: 700; }
-    .form-group input, .form-group select { width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid var(--text-secondary); border-radius: 5px; color: var(--text-primary); }
-
-    .submit-btn {
-      width: 100%;
-      padding: 1rem;
-      background: transparent;
-      border: 2px solid var(--accent-color);
-      color: var(--accent-color);
-      font-family: 'Orbitron', monospace;
-      font-weight: 700;
-      font-size: 1.2rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .success-container, .error-container {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0,0,0,0.95);
-      position: fixed;
-      top:0; left:0;
-      width:100%; height:100vh;
-      color: var(--accent-color);
-      font-family: 'Orbitron', monospace;
-      font-size: 2rem;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .visible { display: flex; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGNITRON 2K25 - Registration</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --accent-color: #00f2fe;
+    --dark-bg: #0a0a0f;
+    --text-primary: #ffffff;
+    --text-secondary: #b8bcc8;
+  }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .form-container {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 3rem 4rem;
+    width: 90%;
+    max-width: 650px;
+    backdrop-filter: blur(10px);
+  }
+  .form-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem,5vw,3rem);
+    text-align: center;
+    margin-bottom: 2rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label { display: block; margin-bottom: 0.5rem; color: var(--accent-color); text-transform: uppercase; font-weight: 700; }
+  .form-group input, .form-group select { width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid var(--text-secondary); border-radius: 5px; color: var(--text-primary); }
+  .submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .success-container {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.95);
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100vh;
+    color: var(--accent-color);
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+  }
+  .success-container.visible { display: flex; }
+</style>
 </head>
 <body>
 
@@ -96,11 +85,11 @@
     <div class="form-group"><label>Phone</label><input type="tel" name="phone" required></div>
     <div class="form-group">
       <label>Event</label>
-      <select name="event_type" required>
+      <select name="event" required>
         <option value="" disabled selected>Select Event</option>
         <option value="hackathon">HACKATHON</option>
         <option value="esports">ESPORTS</option>
-        <option value="workshops">WORKSHOPS</option>
+        <option value="workshop">WORKSHOPS</option>
       </select>
     </div>
     <div class="form-group">
@@ -128,19 +117,13 @@
 </div>
 
 <div class="success-container" id="successContainer">
-  Registration Successful!<br><br>
-  You will receive a confirmation email shortly.
-</div>
-<div class="error-container" id="errorContainer">
-  Payment or registration failed.<br><br>
-  Please try again or contact support.
+  Registration Successful!
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 const form = document.getElementById('registration-form');
 const successContainer = document.getElementById('successContainer');
-const errorContainer = document.getElementById('errorContainer');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -151,12 +134,12 @@ form.addEventListener('submit', async (e) => {
     const res = await fetch('/.netlify/functions/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formData, amount: 1 }) // ₹1 Garebiii
+      body: JSON.stringify({ ...formData, amount: 1 }) // ₹1
     });
     const data = await res.json();
     if (!data.orderId) throw new Error('Order creation failed');
 
-    // 2️⃣ Razorpay Checkout
+    // 2️⃣ Open Razorpay checkout
     const options = {
       key: data.key,
       amount: data.amount * 100,
@@ -164,29 +147,24 @@ form.addEventListener('submit', async (e) => {
       name: "IGNITRON 2K25",
       description: "Event Registration",
       order_id: data.orderId,
-      handler: async function(response) {
-        try {
-          // 3️⃣ Verify payment
-          const verify = await fetch('/.netlify/functions/verify-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              ...formData,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
-            })
-          });
-          const verifyRes = await verify.json();
-          if(verifyRes.success){
-            successContainer.classList.add('visible');
-            form.reset();
-          } else {
-            errorContainer.classList.add('visible');
-          }
-        } catch(err) {
-          console.error(err);
-          errorContainer.classList.add('visible');
+      handler: async function (response) {
+        // Send payment verification with signature
+        const verifyRes = await fetch('/.netlify/functions/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...formData,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature
+          })
+        });
+        const verifyData = await verifyRes.json();
+        if (verifyData.success) {
+          successContainer.classList.add('visible');
+          form.reset();
+        } else {
+          alert('Payment succeeded but registration failed. Contact support.');
         }
       },
       prefill: {
@@ -201,9 +179,10 @@ form.addEventListener('submit', async (e) => {
 
   } catch(err) {
     console.error(err);
-    errorContainer.classList.add('visible');
+    alert('Error creating order. Try again.');
   }
 });
 </script>
+
 </body>
 </html>
