@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,9 +6,7 @@
 <title>IGNITRON 2K25 - Registration</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
     --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     --accent-color: #00f2fe;
@@ -16,39 +14,24 @@
     --text-primary: #ffffff;
     --text-secondary: #b8bcc8;
   }
-
   body {
     font-family: 'Space Grotesk', sans-serif;
     background-color: var(--dark-bg);
     color: var(--text-primary);
-    overflow-y: auto;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
-    padding: 2rem 0;
   }
-
-  canvas#matrix {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-  }
-
   .form-container {
-    position: relative;
-    z-index: 1;
     background: rgba(255,255,255,0.05);
     border: 2px solid var(--accent-color);
     border-radius: 10px;
     padding: 3rem 4rem;
     width: 90%;
     max-width: 650px;
-    margin: 2rem auto;
     backdrop-filter: blur(10px);
   }
-
   .form-title {
     font-family: 'Orbitron', monospace;
     font-size: clamp(2rem,5vw,3rem);
@@ -58,24 +41,9 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-
   .form-group { margin-bottom: 1.5rem; }
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--accent-color);
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-  .form-group input, .form-group select {
-    width: 100%;
-    padding: 0.75rem;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid var(--text-secondary);
-    border-radius: 5px;
-    color: var(--text-primary);
-  }
-
+  .form-group label { display: block; margin-bottom: 0.5rem; color: var(--accent-color); text-transform: uppercase; font-weight: 700; }
+  .form-group input, .form-group select { width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid var(--text-secondary); border-radius: 5px; color: var(--text-primary); }
   .submit-btn {
     width: 100%;
     padding: 1rem;
@@ -89,7 +57,6 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
-
   .success-container {
     display: none;
     flex-direction: column;
@@ -102,38 +69,18 @@
     color: var(--accent-color);
     font-family: 'Orbitron', monospace;
     font-size: 2rem;
-    z-index: 3;
   }
-
   .success-container.visible { display: flex; }
-
-  /* Loading overlay */
-  .loading-overlay {
-    display: none;
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100vh;
-    background: rgba(0,0,0,0.75);
-    z-index: 2;
-    justify-content: center;
-    align-items: center;
-    color: var(--accent-color);
-    font-family: 'Orbitron', monospace;
-    font-size: 1.5rem;
-  }
-  .loading-overlay.visible { display: flex; }
 </style>
 </head>
 <body>
-
-<canvas id="matrix"></canvas>
 
 <div class="form-container">
   <h2 class="form-title">System Protocol: Register</h2>
   <form id="registration-form">
     <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
     <div class="form-group"><label>College</label><input type="text" name="college" required></div>
-    <div class="form-group"><label>Year (Optional)</label><input type="number" name="year" min="1" max="4"></div>
+    <div class="form-group"><label>Year</label><input type="number" name="year" required min="1" max="4"></div>
     <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
     <div class="form-group"><label>Phone</label><input type="tel" name="phone" required></div>
     <div class="form-group">
@@ -173,21 +120,16 @@
   Registration Successful!
 </div>
 
-<div class="loading-overlay" id="loadingOverlay">Loading...</div>
-
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 const form = document.getElementById('registration-form');
 const successContainer = document.getElementById('successContainer');
-const loadingOverlay = document.getElementById('loadingOverlay');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const formData = Object.fromEntries(new FormData(form));
 
   try {
-    loadingOverlay.classList.add('visible');
-
     // 1️⃣ Create Razorpay order
     const res = await fetch('/.netlify/functions/create-order', {
       method: 'POST',
@@ -218,8 +160,6 @@ form.addEventListener('submit', async (e) => {
           })
         });
         const verifyData = await verifyRes.json();
-        loadingOverlay.classList.remove('visible');
-
         if (verifyData.success) {
           successContainer.classList.add('visible');
           form.reset();
@@ -238,47 +178,9 @@ form.addEventListener('submit', async (e) => {
     rzp.open();
 
   } catch(err) {
-    loadingOverlay.classList.remove('visible');
     console.error(err);
     alert('Error creating order. Try again.');
   }
-});
-
-/* MATRIX BACKGROUND ANIMATION */
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-
-const letters = "アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const fontSize = 16;
-const columns = Math.floor(width / fontSize);
-const drops = Array(columns).fill(1);
-
-function draw() {
-  ctx.fillStyle = "rgba(0,0,0,0.05)";
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.fillStyle = "#0ff";
-  ctx.font = fontSize + "px monospace";
-
-  for(let i = 0; i < drops.length; i++){
-    const text = letters[Math.floor(Math.random() * letters.length)];
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-    if(drops[i] * fontSize > height && Math.random() > 0.975){
-      drops[i] = 0;
-    }
-    drops[i]++;
-  }
-}
-
-setInterval(draw, 50);
-
-window.addEventListener("resize", () => {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
 });
 </script>
 
