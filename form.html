@@ -6,7 +6,9 @@
 <title>IGNITRON 2K25 - Registration</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   :root {
     --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     --accent-color: #00f2fe;
@@ -14,6 +16,7 @@
     --text-primary: #ffffff;
     --text-secondary: #b8bcc8;
   }
+
   body {
     font-family: 'Space Grotesk', sans-serif;
     background-color: var(--dark-bg);
@@ -22,9 +25,22 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow: hidden;
+    position: relative;
   }
+
+  /* MATRIX BACKGROUND */
+  canvas#matrix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
   .form-container {
-    background: rgba(255,255,255,0.05);
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,0,0.6);
     border: 2px solid var(--accent-color);
     border-radius: 10px;
     padding: 3rem 4rem;
@@ -32,6 +48,7 @@
     max-width: 650px;
     backdrop-filter: blur(10px);
   }
+
   .form-title {
     font-family: 'Orbitron', monospace;
     font-size: clamp(2rem,5vw,3rem);
@@ -41,9 +58,11 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
   .form-group { margin-bottom: 1.5rem; }
   .form-group label { display: block; margin-bottom: 0.5rem; color: var(--accent-color); text-transform: uppercase; font-weight: 700; }
   .form-group input, .form-group select { width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.1); border: 1px solid var(--text-secondary); border-radius: 5px; color: var(--text-primary); }
+
   .submit-btn {
     width: 100%;
     padding: 1rem;
@@ -57,6 +76,24 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
+
+  /* LOADING OVERLAY */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100vh;
+    background: rgba(0,0,0,0.8);
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Orbitron', monospace;
+    color: var(--accent-color);
+    font-size: 2rem;
+  }
+
+  .loading-overlay.visible { display: flex; }
+
   .success-container {
     display: none;
     flex-direction: column;
@@ -69,18 +106,31 @@
     color: var(--accent-color);
     font-family: 'Orbitron', monospace;
     font-size: 2rem;
+    z-index: 3;
   }
   .success-container.visible { display: flex; }
 </style>
 </head>
 <body>
 
+<canvas id="matrix"></canvas>
+
 <div class="form-container">
   <h2 class="form-title">System Protocol: Register</h2>
   <form id="registration-form">
     <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
     <div class="form-group"><label>College</label><input type="text" name="college" required></div>
-    <div class="form-group"><label>Year</label><input type="number" name="year" required min="1" max="4"></div>
+    <div class="form-group">
+      <label>Year</label>
+      <select name="year" required>
+        <option value="" disabled selected>Select Year</option>
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+        <option value="3">3rd Year</option>
+        <option value="4">4th Year</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
     <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
     <div class="form-group"><label>Phone</label><input type="tel" name="phone" required></div>
     <div class="form-group">
@@ -116,30 +166,59 @@
   </form>
 </div>
 
-<div class="success-container" id="successContainer">
-  Registration Successful!
-</div>
+<div class="loading-overlay" id="loadingOverlay">Loading...</div>
+<div class="success-container" id="successContainer">Registration Successful!</div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+// MATRIX BACKGROUND
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = "rgba(10,10,15,0.1)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle = "#0F0";
+  ctx.font = fontSize + "px monospace";
+
+  for(let i=0; i<drops.length; i++) {
+    const text = letters[Math.floor(Math.random()*letters.length)];
+    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+    if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+  requestAnimationFrame(drawMatrix);
+}
+drawMatrix();
+
+// FORM SUBMISSION
 const form = document.getElementById('registration-form');
 const successContainer = document.getElementById('successContainer');
+const loadingOverlay = document.getElementById('loadingOverlay');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  loadingOverlay.classList.add('visible');
+
   const formData = Object.fromEntries(new FormData(form));
 
   try {
-    // 1️⃣ Create Razorpay order
     const res = await fetch('/.netlify/functions/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formData, amount: 1 }) // ₹1
+      body: JSON.stringify({ ...formData, amount: 1 })
     });
     const data = await res.json();
     if (!data.orderId) throw new Error('Order creation failed');
 
-    // 2️⃣ Open Razorpay checkout
     const options = {
       key: data.key,
       amount: data.amount * 100,
@@ -148,7 +227,6 @@ form.addEventListener('submit', async (e) => {
       description: "Event Registration",
       order_id: data.orderId,
       handler: async function (response) {
-        // Send payment verification with signature
         const verifyRes = await fetch('/.netlify/functions/verify-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -160,6 +238,7 @@ form.addEventListener('submit', async (e) => {
           })
         });
         const verifyData = await verifyRes.json();
+        loadingOverlay.classList.remove('visible');
         if (verifyData.success) {
           successContainer.classList.add('visible');
           form.reset();
@@ -167,22 +246,18 @@ form.addEventListener('submit', async (e) => {
           alert('Payment succeeded but registration failed. Contact support.');
         }
       },
-      prefill: {
-        name: formData.name,
-        email: formData.email,
-        contact: formData.phone
-      },
+      prefill: { name: formData.name, email: formData.email, contact: formData.phone },
       theme: { color: "#00f2fe" }
     };
     const rzp = new Razorpay(options);
     rzp.open();
 
   } catch(err) {
+    loadingOverlay.classList.remove('visible');
     console.error(err);
     alert('Error creating order. Try again.');
   }
 });
 </script>
-
 </body>
 </html>
