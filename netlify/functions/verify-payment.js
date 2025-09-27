@@ -6,6 +6,7 @@ exports.handler = async (event, context) => {
   let client;
   try {
     const body = JSON.parse(event.body);
+    console.log("Received body:", body);
     const {
       name,
       college,
