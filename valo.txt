@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IGNITRON 2K25 - Valorant Tournament</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Teko:wght@300;400;500;600;700&display=swap');
+    
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: #0f1923;
+      color: #fff;
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Video background */
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      overflow: hidden;
+    }
+
+    .video-bg video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+
+    .video-bg::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 25, 35, 0.85);
+      z-index: 1;
+    }
+
+    /* Animated tactical grid overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 70, 85, 0.05) 2px, rgba(255, 70, 85, 0.05) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 70, 85, 0.05) 2px, rgba(255, 70, 85, 0.05) 4px);
+      z-index: -2;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      from { transform: translate(0, 0); }
+      to { transform: translate(50px, 50px); }
+    }
+
+    /* Valorant-style radial bursts */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(255, 70, 85, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(253, 66, 129, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(66, 253, 164, 0.1) 0%, transparent 50%);
+      z-index: -1;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* Floating hexagons */
+    .hex-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .hex {
+      position: absolute;
+      width: 60px;
+      height: 35px;
+      background: rgba(255, 70, 85, 0.15);
+      border-left: 2px solid rgba(255, 70, 85, 0.4);
+      border-right: 2px solid rgba(255, 70, 85, 0.4);
+      animation: floatHex 15s infinite ease-in-out;
+    }
+
+    .hex::before,
+    .hex::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+    }
+
+    .hex::before {
+      bottom: 100%;
+      border-bottom: 17.5px solid rgba(255, 70, 85, 0.15);
+    }
+
+    .hex::after {
+      top: 100%;
+      border-top: 17.5px solid rgba(255, 70, 85, 0.15);
+    }
+
+    .hex:nth-child(1) { left: 10%; top: 10%; animation-delay: 0s; }
+    .hex:nth-child(2) { left: 85%; top: 25%; animation-delay: 2s; }
+    .hex:nth-child(3) { left: 20%; top: 70%; animation-delay: 4s; }
+    .hex:nth-child(4) { left: 75%; top: 60%; animation-delay: 6s; }
+    .hex:nth-child(5) { left: 50%; top: 15%; animation-delay: 8s; }
+
+    @keyframes floatHex {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+      50% { transform: translateY(-30px) rotate(180deg); opacity: 0.7; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .logo-accent {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 70, 85, 0.3) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      animation: logoGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes logoGlow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.3); }
+    }
+
+    header h1 {
+      font-family: 'Teko', sans-serif;
+      font-size: clamp(3rem, 12vw, 7rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff4655 0%, #fd4281 50%, #42fda4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 10px;
+      margin-bottom: 0.5rem;
+      animation: glitchText 3s ease-in-out infinite;
+      position: relative;
+      filter: drop-shadow(0 0 30px rgba(255, 70, 85, 0.5));
+    }
+
+    @keyframes glitchText {
+      0%, 100% { filter: drop-shadow(0 0 30px rgba(255, 70, 85, 0.5)) brightness(1); }
+      25% { filter: drop-shadow(0 0 30px rgba(255, 70, 85, 0.7)) brightness(1.2) contrast(1.1); }
+      50% { filter: drop-shadow(0 0 30px rgba(255, 70, 85, 0.5)) brightness(1); }
+      75% { filter: drop-shadow(0 0 30px rgba(255, 70, 85, 0.8)) brightness(1.3) contrast(1.2); }
+    }
+
+    .subtitle {
+      font-family: 'Teko', sans-serif;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      color: #ff4655;
+      font-weight: 600;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      animation: fadeIn 1s ease-in;
+      text-shadow: 0 0 30px rgba(255, 70, 85, 0.7);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .content {
+      max-width: 1100px;
+      margin: auto;
+      background: rgba(10, 15, 20, 0.75);
+      padding: 3.5rem;
+      border-radius: 0;
+      position: relative;
+      backdrop-filter: blur(30px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8),
+                  inset 0 0 0 2px rgba(255, 70, 85, 0.4);
+      animation: slideUp 0.8s ease-out;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), calc(100% - 40px) 100%, 0 100%);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .content::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #ff4655, #fd4281, #42fda4, #ff4655);
+      background-size: 200% 100%;
+      z-index: 2;
+      animation: gradientShift 3s linear infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .intro-text {
+      font-size: 1.3rem;
+      line-height: 2;
+      margin-bottom: 3rem;
+      color: #e8e8e8;
+      font-weight: 400;
+    }
+
+    .intro-text strong {
+      color: #ff4655;
+      font-weight: 700;
+      text-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
+    }
+
+    .content h2 {
+      font-family: 'Teko', sans-serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      color: #ff4655;
+      margin-top: 3.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-weight: 600;
+    }
+
+    .content h2::before {
+      content: "//";
+      position: absolute;
+      left: -35px;
+      color: #42fda4;
+      font-weight: 700;
+    }
+
+    .content h2::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #ff4655, #fd4281, transparent);
+      animation: expand 0.6s ease-out;
+    }
+
+    @keyframes expand {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, rgba(255, 70, 85, 0.15) 0%, rgba(10, 15, 20, 0.9) 100%);
+      border: 2px solid rgba(255, 70, 85, 0.4);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 0 100%);
+    }
+
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 25px;
+      height: 25px;
+      background: #ff4655;
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+
+    .feature-card::after {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, rgba(255, 70, 85, 0.3), transparent);
+      transition: top 0.6s ease;
+    }
+
+    .feature-card:hover::after {
+      top: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      border-color: #ff4655;
+      box-shadow: 0 20px 50px rgba(255, 70, 85, 0.5);
+    }
+
+    .feature-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.2rem;
+      filter: drop-shadow(0 0 15px rgba(255, 70, 85, 0.6));
+    }
+
+    .feature-title {
+      color: #ff4655;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-family: 'Teko', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .feature-text {
+      color: #c8ccd8;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .info-item {
+      background: rgba(66, 253, 164, 0.08);
+      border-left: 5px solid #42fda4;
+      padding: 1.8rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+      background: rgba(66, 253, 164, 0.15);
+      transform: translateX(8px);
+    }
+
+    .info-label {
+      color: #42fda4;
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.7rem;
+    }
+
+    .info-value {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .prize-section {
+      background: linear-gradient(135deg, rgba(253, 66, 129, 0.15) 0%, rgba(10, 15, 20, 0.7) 100%);
+      border: 3px solid rgba(253, 66, 129, 0.5);
+      padding: 3rem;
+      margin: 3rem 0;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+    }
+
+    .prize-section::before {
+      content: "🏆";
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 10rem;
+      opacity: 0.08;
+    }
+
+    .prize-section h3 {
+      color: #fd4281;
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Teko', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    .prize-section p {
+      font-size: 1.25rem;
+      line-height: 2.2;
+      color: #e8e8e8;
+    }
+
+    .rules-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .rules-list li {
+      padding: 1.2rem 0;
+      padding-left: 3.5rem;
+      position: relative;
+      color: #e8e8e8;
+      border-bottom: 1px solid rgba(255, 70, 85, 0.15);
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .rules-list li::before {
+      content: "▶";
+      position: absolute;
+      left: 0;
+      color: #ff4655;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .rules-list li:hover {
+      color: #ff4655;
+      padding-left: 4rem;
+      background: rgba(255, 70, 85, 0.08);
+    }
+
+    .rules-list li:hover::before {
+      left: 0.5rem;
+      transform: scale(1.3);
+    }
+
+    .btn-container {
+      text-align: center;
+      margin-top: 4rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 1.8rem 4.5rem;
+      font-size: 1.8rem;
+      font-family: 'Teko', sans-serif;
+      font-weight: 700;
+      border: none;
+      background: linear-gradient(135deg, #ff4655, #fd4281);
+      color: #fff;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+      box-shadow: 0 15px 40px rgba(255, 70, 85, 0.6);
+      transition: all 0.3s ease;
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 25px 60px rgba(255, 70, 85, 0.8);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding: 3rem 2rem;
+      font-size: 1rem;
+      color: #b8bcc8;
+    }
+
+    footer a {
+      color: #ff4655;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 700;
+      font-family: 'Teko', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 1.2rem;
+    }
+
+    footer a:hover {
+      color: #42fda4;
+      text-shadow: 0 0 15px rgba(66, 253, 164, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 2.5rem 2rem;
+      }
+      
+      .feature-grid,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        letter-spacing: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="video-bg">
+  <video autoplay muted loop playsinline>
+    <source src="valorant.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="hex-container">
+  <div class="hex"></div>
+  <div class="hex"></div>
+  <div class="hex"></div>
+  <div class="hex"></div>
+  <div class="hex"></div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="logo-accent"></div>
+    <h1>IGNITRON 2K25</h1>
+    <div class="subtitle">Valorant Tournament</div>
+  </header>
+
+  <div class="content">
+    <p class="intro-text">
+      Lock in, agents! <strong>IGNITRON 2K25</strong> presents the ultimate <strong>Valorant Tournament</strong>. 
+      Assemble your squad of five and prepare for intense tactical warfare. Show your skills, coordinate strategies, 
+      and dominate the battlefield in this <strong>5v5 competitive showdown</strong>!
+    </p>
+
+    <h2>Game Format</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚔️</div>
+        <div class="feature-title">5v5 Teams</div>
+        <div class="feature-text">Full squad tactical battles with coordinated strategies</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Competitive Mode</div>
+        <div class="feature-text">Standard competitive ruleset and map rotation</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Tournament Bracket</div>
+        <div class="feature-text">Double elimination format for maximum action</div>
+      </div>
+    </div>
+
+    <h2>Tournament Details</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Team Size</div>
+        <div class="info-value">5 Players + Substitutes</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Format</div>
+        <div class="info-value">Double Elimination</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Match Type</div>
+        <div class="info-value">Best of 3 (BO3)</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Server</div>
+        <div class="info-value">Mumbai (Low Ping)</div>
+      </div>
+    </div>
+
+    <h2>Rules & Requirements</h2>
+    <ul class="rules-list">
+      <li>Each team must have 5 registered players (substitutes allowed)</li>
+      <li>All players must be registered IGNITRON 2K25 participants</li>
+      <li>Standard Valorant competitive rules apply</li>
+      <li>Map picks follow official tournament protocol</li>
+      <li>Team captains must be present for check-in 30 minutes before match</li>
+      <li>No cheating, exploits, or unsportsmanlike behavior tolerated</li>
+    </ul>
+
+    <h2>Prizes & Glory</h2>
+    <div class="prize-section">
+      <h3>Rewards Await</h3>
+      <p>
+        <strong>🥇 Champions:</strong> Grand Prize + Trophy + Bragging Rights<br>
+        <strong>🥈 Runners-up:</strong> Second Place Prize<br>
+        <strong>🥉 Third Place:</strong> Consolation Prize<br>
+        <strong>🎖️ MVP:</strong> Special Recognition for Best Player
+      </p>
+    </div>
+
+    <h2>Venue & Schedule</h2>
+    <p class="intro-text">
+      <strong>📍 Mode:</strong> Online Tournament (Remote Play)<br>
+      <strong>📅 Date:</strong> To be announced on the official IGNITRON schedule<br>
+      <strong>💻 Platform:</strong> Valorant Official Servers<br>
+      <strong>🎮 Region:</strong> Mumbai Server (India)
+    </p>
+
+    <div class="btn-container">
+      <a href="form.html" class="btn">Register Your Squad</a>
+    </div>
+  </div>
+
+  <footer>
+    <p><a href="index.html">← Back to IGNITRON Homepage</a></p>
+    <p style="margin-top: 1.5rem; opacity: 0.7; font-family: 'Teko', sans-serif; letter-spacing: 3px; font-size: 1.1rem;">
+      LOCK IN. PLANT. DEFUSE. DOMINATE. | IGNITRON 2K25
+    </p>
+  </footer>
+</div>
+
+</body>
+</html>

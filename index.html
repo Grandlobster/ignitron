@@ -503,11 +503,13 @@
             letter-spacing: 1px;
             margin-top: 1.5rem;
             transition: all 0.3s ease;
+            z-index: index 10;
         }
 
         .register-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(245, 87, 108, 0.5);
+            z-index:2;
         }
 
         /* Video specific cards */
@@ -849,6 +851,17 @@
                 padding: 0 1rem;
             }
         }
+        .event-bg-video,
+.escape-room-animation,
+.ui-ux-animation,
+.data-wrangler-animation,
+.blind-coding-animation,
+.hackathon-animation,
+.chess-animation,
+.ai-prompt-animation {
+    pointer-events: none;
+}
+
     </style>
 </head>
 <body>
@@ -997,7 +1010,7 @@
                     <p class="event-description">
                         Hunt down bugs and fix broken code under pressure. Competitors are tasked with identifying errors and optimizing programs within time limits. The one who restores functionality fastest while keeping code clean and efficient earns victory.
                     </p>
-                    <a href="your-registration-page.html#debug-hunt" class="register-button">Register</a>
+                    <a href="chess.html" class="register-button">Register</a>
                 </div>
                 <div class="event-card chess-card">
                     <div class="chess-animation"></div>
@@ -1006,7 +1019,7 @@
                     <p class="event-description">
                         Strategy meets competition on a digital battlefield. Participants showcase tactical thinking and strategic mastery on the checkered board. Prove your supremacy in mind and skill in this classic game of intellect.
                     </p>
-                    <a href="your-registration-page.html#chess" class="register-button">Register</a>
+                    <a href="chess.html" class="register-button">Register</a>
                 </div>
             </div>
         </section>
@@ -1016,7 +1029,8 @@
             <div class="sponsor-logos">
                 <img src="ZEAL.PNG" alt="ZEAL College Logo">
                 <img src="SESA.PNG" alt="SESA Logo">
-                <img src="SPONSOR1.PNG" alt="Sponsor 1 Logo">
+                <a href="https://www.infeanet.com/" target="_blank">
+                <img src="sponsor1.png" alt="Sponsor 1 Logo"></a>
                 <img src="SPONSOR2.PNG" alt="Sponsor 2 Logo">
             </div>
         </section>
