@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blind Coding - Challenge</title>
+<style>
+  :root {
+    cursor: none;
+    --cursorX: 50vw;
+    --cursorY: 50vh;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    font-family: "Courier New", monospace;
+    height: 100vh;
+    overflow: hidden;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 3rem;
+    color: #fff;
+    text-shadow: 0 0 20px #fff, 0 0 40px #aaa, 0 0 80px #fff;
+    margin-bottom: 20px;
+  }
+
+  .rules {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    max-width: 600px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px #fff;
+  }
+
+  .btn {
+    padding: 14px 32px;
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-radius: 6px;
+    box-shadow: 0 0 20px #fff, 0 0 40px #aaa;
+    transition: 0.3s;
+  }
+  .btn:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 30px #fff, 0 0 60px #aaa, 0 0 100px #fff;
+  }
+
+  /* Flashlight Overlay */
+  :root::before {
+    content: '';
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events: none;
+    background: radial-gradient(
+      circle 18vmax at var(--cursorX) var(--cursorY),
+      rgba(255,255,255,0.3) 0%,
+      rgba(0,0,0,0.6) 60%,
+      rgba(0,0,0,0.99) 100%
+    );
+    transition: background 0.01s;
+    z-index: 1000;
+  }
+
+  @media (max-width:768px){
+    h1 {font-size:2rem;}
+    .rules {font-size:1rem;}
+  }
+</style>
+</head>
+<body>
+
+<h1>👨‍💻 Blind Coding Challenge</h1>
+
+<div class="rules">
+🕶️ Code without seeing it.<br>
+⌨️ Test your memory and logic.<br>
+⚡ Fastest & accurate wins!<br>
+🏆 Join the ultimate coding showdown at IGNITRON 2K25!
+</div>
+
+<a href="promptform.html" class="btn">Register Now</a>
+
+<script>
+// Flashlight movement
+function updateFlash(e){
+  const x = e.clientX || e.touches[0].clientX;
+  const y = e.clientY || e.touches[0].clientY;
+  document.documentElement.style.setProperty('--cursorX', x + 'px');
+  document.documentElement.style.setProperty('--cursorY', y + 'px');
+}
+document.addEventListener('mousemove', updateFlash);
+document.addEventListener('touchmove', updateFlash);
+</script>
+
+</body>
+</html>

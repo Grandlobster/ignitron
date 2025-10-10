@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapid Coding Arena</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Background fast code effect */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    /* Glitch Header */
+    h1 {
+      font-size: 3rem;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px #ffee58, 0 0 20px #ffeb3b, 0 0 40px #fdd835;
+      animation: flicker 1.5s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.4; }
+    }
+
+    /* Typewriter Effect */
+    .typewriter {
+      font-size: 1.2rem;
+      border-right: 2px solid #ffeb3b;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      margin-top: 20px;
+      animation: typing 4s steps(30, end) forwards, blink 0.7s infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 22ch; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    /* Features */
+    .features {
+      margin-top: 30px;
+      font-size: 1rem;
+      opacity: 0;
+      animation: fadeIn 3s ease forwards;
+      animation-delay: 4.5s;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Button */
+    .btn {
+      margin-top: 40px;
+      padding: 14px 28px;
+      background: #ffeb3b;
+      color: #000;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 0 20px #ffee58, 0 0 40px #fdd835;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #fdd835;
+      box-shadow: 0 0 30px #ffeb3b, 0 0 60px #ffee58;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .typewriter { font-size: 1rem; }
+      .features { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <h1>⚡ Rapid Coding Arena</h1>
+
+  <div class="typewriter">Think Fast. Code Faster.</div>
+
+  <div class="features">
+    ⏱️ Speed Coding Challenges <br>
+    💡 Real-Time Debugging <br>
+    🧩 Solve Problems Under Pressure <br>
+    🏆 Compete & Win
+  </div>
+
+  <a href="promptform.html" class="btn">Start Coding</a>
+
+  <script>
+    // Fast Matrix Code Effect
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "01 CODE DEBUG HACK FAST WIN ";
+    const matrix = letters.split("");
+
+    const font_size = 14;
+    const columns = canvas.width / font_size;
+    const drops = [];
+
+    for (let x = 0; x < columns; x++) drops[x] = 1;
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#ffeb3b";
+      ctx.font = font_size + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = matrix[Math.floor(Math.random() * matrix.length)];
+        ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+        if (drops[i] * font_size > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 25); // Faster drops for coding speed effect
+  </script>
+</body>
+</html>

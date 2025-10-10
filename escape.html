@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escape Room Challenge</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Glitch Title */
+    h1 {
+      font-size: 3rem;
+      color: #ff0033;
+      text-shadow: 0 0 10px #ff0033, 0 0 20px #ff3366, 0 0 40px #ff0033;
+      animation: flicker 2s infinite;
+      text-align: center;
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 24%, 55% {
+        opacity: 0.2;
+      }
+    }
+
+    /* Typewriter Effect */
+    .typewriter {
+      font-size: 1.2rem;
+      border-right: 2px solid #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 5s steps(40, end) forwards, blink 0.7s infinite;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 28ch; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    /* Fade in rules */
+    .rules {
+      margin-top: 30px;
+      font-size: 1rem;
+      opacity: 0;
+      animation: fadeIn 3s ease forwards;
+      animation-delay: 6s;
+      text-align: center;
+      max-width: 90%;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Register Button */
+    .register-btn {
+      margin-top: 40px;
+      padding: 14px 28px;
+      background: #ff0033;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 0 20px #ff0033, 0 0 40px #ff1a4d;
+      transition: 0.3s;
+    }
+    .register-btn:hover {
+      background: #ff1a4d;
+      box-shadow: 0 0 30px #ff3366, 0 0 60px #ff0033;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .typewriter { font-size: 1rem; }
+      .rules { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Escape Room Challenge</h1>
+  
+  <div class="typewriter">
+    You have been locked inside...
+  </div>
+
+  <div class="rules">
+    Solve mind-bending puzzles. <br>
+    Find the hidden clues. <br>
+    Escape... before time runs out. <br><br>
+    Only the sharpest minds will survive.
+  </div>
+
+  <a href="promptform.html" class="register-btn">Enter the Room</a>
+</body>
+</html>
